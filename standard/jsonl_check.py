@@ -168,10 +168,11 @@ def seal(candidates: list[dict[str, Any]], producer: str, occurred_at: str) -> l
     for sequence, candidate in enumerate(candidates, 1):
         validate_candidate(candidate, sequence)
         input_hash = sha256(candidate)
+        record_seed = f"{candidate['correlationId']}:{sequence}:{input_hash}"
         record = dict(candidate)
         record["schema"] = "wellmanifest.jsonl/record/v1"
         record.update({
-            "recordId": f"record:{hashlib.sha256(f'{candidate['correlationId']}:{sequence}:{input_hash}'.encode()).hexdigest()[:32]}",
+            "recordId": f"record:{hashlib.sha256(record_seed.encode()).hexdigest()[:32]}",
             "producer": producer,
             "occurredAt": occurred_at,
             "inputHash": input_hash,

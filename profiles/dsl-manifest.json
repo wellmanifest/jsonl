@@ -32,7 +32,7 @@
   "artifacts": [
     {"path": "contracts/jsonl.contract.json", "role": "normative-source", "digest": "sha256:b5b3ed1f7852ac9be01dd6bef462491abe13c9c5ac3d23fbbcafd9ae25e50e68"},
     {"path": "grammars/candidate.gbnf", "role": "grammar", "digest": "sha256:12b5f40e09ae948cc0d52f7b6ce8990504e0e9f53cf7ba472dce7f87ec953622"},
-    {"path": "standard/jsonl_check.py", "role": "parser-contract", "digest": "sha256:f67ab12f0a1983ed9ff163e38a4c9ac148fe70e5033e7d09e17238c126140124"},
+    {"path": "standard/jsonl_check.py", "role": "parser-contract", "digest": "sha256:d29d1d5284b8e6ceacbabe002f206ef823e4a06097e9d3ec6943682b66bb7fa0"},
     {"path": "examples/candidates.jsonl", "role": "example", "digest": "sha256:5ac76f521bec46a23701a8ab2a677faf412e9a4115f6abb2f328f69f84781433"}
   ],
   "namespaces": [
