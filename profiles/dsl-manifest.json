@@ -1,0 +1,124 @@
+{
+  "$schema": "https://wellmanifest.dev/schemas/dsl-manifest/v1",
+  "schema": "wellmanifest.dsl/manifest/v1",
+  "id": "wellmanifest.jsonl",
+  "name": "Wellmanifest JSON Lines framing",
+  "version": "0.1.0-dev",
+  "status": "experimental",
+  "purpose": "Deterministic one-object-per-line framing for propose-only LLM DSL candidates and runtime-sealed records",
+  "domain": "structured-stream-framing",
+  "owners": [
+    {
+      "kind": "repository",
+      "id": "github:wellmanifest/jsonl",
+      "responsibilities": ["semantics", "validation", "compatibility", "runtime", "security"]
+    }
+  ],
+  "source": {
+    "repository": "https://github.com/wellmanifest/jsonl",
+    "path": "contracts/jsonl.contract.json",
+    "declaredVersion": "0.1.0",
+    "canonical": "json-ast",
+    "mediaType": "application/x-ndjson",
+    "selectors": []
+  },
+  "ownedPaths": [
+    "contracts/**",
+    "grammars/**",
+    "profiles/**",
+    "standard/**",
+    "examples/**"
+  ],
+  "artifacts": [
+    {"path": "contracts/jsonl.contract.json", "role": "normative-source", "digest": "sha256:b5b3ed1f7852ac9be01dd6bef462491abe13c9c5ac3d23fbbcafd9ae25e50e68"},
+    {"path": "grammars/candidate.gbnf", "role": "grammar", "digest": "sha256:12b5f40e09ae948cc0d52f7b6ce8990504e0e9f53cf7ba472dce7f87ec953622"},
+    {"path": "standard/jsonl_check.py", "role": "parser-contract", "digest": "sha256:d29d1d5284b8e6ceacbabe002f206ef823e4a06097e9d3ec6943682b66bb7fa0"},
+    {"path": "examples/candidates.jsonl", "role": "example", "digest": "sha256:5ac76f521bec46a23701a8ab2a677faf412e9a4115f6abb2f328f69f84781433"}
+  ],
+  "namespaces": [
+    {"prefix": "wellmanifest.jsonl", "uri": "https://wellmanifest.com/schemas/jsonl/"}
+  ],
+  "projections": [
+    {
+      "name": "candidate-gbnf",
+      "mediaType": "application/gbnf",
+      "direction": "from-canonical",
+      "lossless": true
+    }
+  ],
+  "lifecycle": {
+    "compatibility": "semver",
+    "stability": "experimental",
+    "breaking": "major",
+    "additive": "minor",
+    "fix": "patch"
+  },
+  "semantics": {
+    "effectModel": "propose-only",
+    "unknownPolicy": "preserve",
+    "authoritySchema": null
+  },
+  "llm": {
+    "mode": "bidirectional",
+    "requestSchemas": ["https://wellmanifest.com/schemas/jsonl/generation-request.v1.json"],
+    "responseSchemas": ["https://wellmanifest.com/schemas/jsonl/candidate.v1.json"],
+    "naturalLanguage": "forbidden",
+    "sourceSchema": null,
+    "decisionProtocol": "dsl-input-output",
+    "modelAuthority": "propose-only",
+    "strict": true
+  },
+  "documentation": {
+    "vocabularyKind": "documents",
+    "commandRoot": "docs",
+    "errorRoot": "docs/ERROR",
+    "criticalRoot": "docs/CRITICAL",
+    "commands": [],
+    "errorCodes": [],
+    "criticalCodes": []
+  },
+  "findingPolicy": {
+    "schema": "wellmanifest.dsl/findings/v1",
+    "requiredProducers": ["wellmanifest.dsl-check"],
+    "securityProducers": ["wellmanifest.dsl-check"],
+    "blockingSeverities": ["critical"],
+    "requireEvaluable": true,
+    "blockUnresolvedSecurity": true
+  },
+  "publicationPolicy": {
+    "declaredTier": "review",
+    "deterministic": true,
+    "independentReview": true,
+    "externalAuthority": false,
+    "runtimeIsolation": false
+  },
+  "conformance": {
+    "levels": ["manifest", "contract", "runtime", "llm-boundary"],
+    "commands": [
+      "python3 standard/jsonl_check.py self-test",
+      "python3 standard/jsonl_check.py validate --profile candidate --file examples/candidates.jsonl"
+    ],
+    "validExamples": ["examples/candidates.jsonl"],
+    "invalidExamples": []
+  },
+  "mappings": [
+    {"standard": "wellmanifest/dsl", "version": "0.1.0-dev", "relation": "compatible-with", "uri": "https://github.com/wellmanifest/dsl"},
+    {"standard": "wellmanifest/logs", "version": "0.2.0", "relation": "compatible-with", "uri": "https://github.com/wellmanifest/logs"},
+    {"standard": "autogrammar/data2dsl", "version": "0.1.0", "relation": "maps-to", "uri": "https://github.com/autogrammar/data2dsl/tree/1e7eddd75a40b6c4388869a8210d2c42ca9d9e5e"},
+    {"standard": "autogrammar/nlp2dsl", "version": "0.0.48", "relation": "maps-to", "uri": "https://github.com/autogrammar/nlp2dsl/tree/261bf43088e1cf29468d6fbfb4d52d64ded6f3bb"}
+  ],
+  "standardsLock": {
+    "schema": "wellmanifest.standards-lock/v1",
+    "entries": [
+      {
+        "standard": "wellmanifest.dsl",
+        "version": "0.1.0-dev",
+        "repository": "https://github.com/wellmanifest/dsl",
+        "revision": "2675a6eb1ee399ec17142e5c2c549918588ce898",
+        "contracts": [
+          {"ref": "https://wellmanifest.dev/schemas/dsl-manifest/v1", "digest": "sha256:34d356b76bbd483372df84bb986e15bb84e9c1f8b11b7dc9e3a6c7276c85ed13"}
+        ]
+      }
+    ]
+  }
+}

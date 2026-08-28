@@ -1,0 +1,15 @@
+root ::= candidate ("\n" candidate)* "\n"?
+candidate ::= "{\"schema\":\"wellmanifest.jsonl/candidate/v1\",\"recordType\":" string ",\"sequence\":" positive-integer ",\"dsl\":{\"manifestId\":" string ",\"schemaRef\":" string ",\"grammarRef\":" string "},\"correlationId\":" string ",\"payload\":" object "}"
+object ::= "{" ws (member ("," ws member)*)? "}"
+member ::= string ws ":" ws value
+array ::= "[" ws (value ("," ws value)*)? "]"
+value ::= object | array | string | number | "true" | "false" | "null"
+string ::= "\"" chars "\""
+chars ::= ([^"\\\x00-\x1f] | "\\" (["\\/bfnrt] | "u" hex hex hex hex))*
+number ::= "-"? integer fraction? exponent?
+positive-integer ::= [1-9] [0-9]*
+integer ::= "0" | [1-9] [0-9]*
+fraction ::= "." [0-9]+
+exponent ::= [eE] [+-]? [0-9]+
+hex ::= [0-9a-fA-F]
+ws ::= [ \t]*

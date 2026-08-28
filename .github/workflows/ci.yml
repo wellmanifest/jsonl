@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.11"
+      - name: Validate JSONL contract
+        run: |
+          python3 standard/jsonl_check.py self-test
+          python3 standard/jsonl_check.py validate --profile candidate --file examples/candidates.jsonl

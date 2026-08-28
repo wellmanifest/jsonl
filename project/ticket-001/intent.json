@@ -1,17 +1,85 @@
 {
   "schema": "new-project.intent/v3",
   "ticket": "ticket-001",
-  "summary": "Define governed standard",
+  "summary": "Define governed JSONL framing standard",
   "workstream": "integration",
   "classification": {
     "kind": "SERVICE",
-    "priority": "P2",
-    "origin": "health"
+    "priority": "P1",
+    "origin": "requested"
   },
-  "allowedPaths": ["project/ticket-001/**", "TODO.md", "project/TICKETS.md"],
+  "placement": {
+    "home": "wellmanifest",
+    "shape": "domain_pack",
+    "runtimeOwner": "subactor",
+    "adopt": ["wellmanifest/new-project", "wellmanifest/dsl"]
+  },
+  "allowedPaths": [
+    ".governance/manifest.json",
+    ".governance/required-checks.json",
+    ".github/workflows/ci.yml",
+    "contracts/**",
+    "grammars/**",
+    "profiles/**",
+    "standard/**",
+    "examples/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "project/ticket-001/**"
+  ],
   "forbiddenPaths": ["project/ticket-*/user-*.md"],
   "stacks": [],
   "dependsOn": [],
   "conflictsWith": [],
-  "integrationTicket": null
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "88a1f7d969eb6bbaee022c8c5dd9dea1efcb9e11",
+    "targetBranch": "main",
+    "outcome": "Publish a deterministic JSONL framing pack for strict LLM candidates, arbitrary DSL payloads and hash-bound runtime records, then prove a Subactor adoption path.",
+    "nonGoals": [
+      "Do not redefine semantic log events owned by wellmanifest/logs",
+      "Do not let an LLM mint timestamps, producer identity, authority, receipts or record hashes",
+      "Do not execute an arbitrary grammar, connector, URI or command from a record",
+      "Do not add a daemon or runtime service to the wellmanifest repository"
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 9,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 2,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use a closed candidate envelope for LLM output, a separate runtime-sealed hash-chain envelope, UTF-8/LF one-object-per-line framing and a wellmanifest/dsl manifest with digest-bound autogrammar adapter declarations.",
+      "components": [
+        {"name": "repository-governance", "paths": [".governance/manifest.json", ".governance/required-checks.json", ".github/workflows/ci.yml"]},
+        {"name": "jsonl-contract", "paths": ["contracts/**", "grammars/**", "profiles/**"]},
+        {"name": "conformance", "paths": ["standard/**", "examples/**"]}
+      ],
+      "responsibilityChanges": true,
+      "interfaceChanges": [
+        "Introduce wellmanifest.jsonl/candidate/v1 and wellmanifest.jsonl/record/v1"
+      ],
+      "dataChanges": [
+        "Introduce canonical UTF-8 JSONL framing and SHA-256 predecessor chaining"
+      ],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert before publication; after adoption issue a compatible contract version and preserve published streams."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-04",
+        "commands": [
+          "python3 standard/jsonl_check.py self-test",
+          "python3 standard/jsonl_check.py validate --profile candidate --file examples/candidates.jsonl",
+          "python3 ../dsl/src/dsl_check.py validate profiles/dsl-manifest.json",
+          "./project/governance-check.sh --actor agent"
+        ],
+        "evidence": "project/ticket-001/ai-codex-logs.txt"
+      }
+    ]
+  }
 }
