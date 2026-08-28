@@ -24,7 +24,13 @@
         "events/**",
         "error/**",
         "models/**",
-        "proto/**"
+        "proto/**",
+        "contracts/**",
+        "schemas/**",
+        "grammars/**",
+        "profiles/**",
+        "standard/**",
+        "examples/**"
       ],
       "workstream": "integration"
     },
@@ -78,7 +84,13 @@
           "events/**",
           "error/**",
           "models/**",
-          "proto/**"
+          "proto/**",
+          "contracts/**",
+          "schemas/**",
+          "grammars/**",
+          "profiles/**",
+          "standard/**",
+          "examples/**"
         ]
       },
       "interfaces": {
@@ -164,6 +176,9 @@
     "mode": "none"
   },
   "governancePaths": [
+    ".governance/manifest.json",
+    ".governance/required-checks.json",
+    ".github/workflows/ci.yml",
     "TODO.md",
     "project/TICKETS.md",
     "project/ticket-*/**",

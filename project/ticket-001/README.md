@@ -1,4 +1,4 @@
-# Ticket 001: Define governed standard
+# Ticket 001: Define governed JSONL standard
 
 - **ID**: ticket-001
 - **Owner**: unresolved:human
@@ -8,11 +8,21 @@
 
 ## Goal and scope
 
-To be completed from human-owned input.
+Define a dependency-free, deterministic JSON Lines framing standard for strict
+LLM output, arbitrary DSL payloads, runtime sealing and debug logs. Keep record
+framing separate from semantic event ownership in `wellmanifest/logs`.
 
 ## Acceptance criteria
 
-- [ ] AC-01: Scope is approved by a human owner.
+- [x] AC-01: Candidate and sealed-record JSONL contracts reject malformed,
+  ambiguous, oversized and hash-drifted lines.
+- [x] AC-02: A strict GBNF projection lets an LLM emit one candidate JSON
+  object per line without runtime-owned authority or receipt fields.
+- [x] AC-03: The DSL manifest binds all normative artifacts and pins the
+  `wellmanifest/dsl` contract plus declared `autogrammar/*` adapters.
+- [x] AC-04: Dependency-free conformance self-tests and example validation
+  pass, including truncation and non-object negative cases.
+- [ ] AC-05: Publication uses exact-head independent Validator approval.
 
 ## Participants
 
