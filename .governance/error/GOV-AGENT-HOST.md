@@ -1,19 +1,20 @@
 # GOV-AGENT-HOST: kontrakt host-agnostyczny nie jest aktywny
 
-Kody: `GOV-AGENT-HOST-001`, `GOV-AGENT-HOST-002`, `GOV-AGENT-HOST-003`
+Kody: `GOV-AGENT-HOST-001`, `GOV-AGENT-HOST-002`, `GOV-AGENT-HOST-003`,
+`GOV-AGENT-HOST-007`
 emitowane przez `.githooks/pre-commit`, oraz `GOV-AGENT-HOST-004`,
 `GOV-AGENT-HOST-005`, `GOV-AGENT-HOST-006` emitowane przez
-`scripts/agent_host_check.py`. Wszystkie sześć jest zarejestrowanych w
+`scripts/agent_host_check.py`. Wszystkie siedem jest zarejestrowanych w
 `governance/diagnostics.json`; `scripts/audit_diagnostics.py` skanuje teraz
 również `.githooks`, więc kod emitowany przez hooka nie może już wypaść z
 katalogu niezauważony.
 
 ## Situation
 
-`001`–`003` pojawiają się przy commicie: branch nie jest związany z ticketem
+`001`–`003` oraz `007` pojawiają się przy commicie: branch nie jest związany z ticketem
 `IN_PROGRESS`, brakuje `project/ticket-NNN/README.md` w stagowanej migawce albo
-governance-only closure w statusie zadeklarowanym przez
-`ticket.closedStatuses` narusza swoje granice.
+commit próbuje zapisać terminalne zamknięcie w repozytorium lub zawiera
+wyłącznie nośniki śledzenia ticketu bez materialnego rezultatu.
 
 `004`–`006` pojawiają się w bramie: brakuje pliku instrukcji deklarowanego przez
 `agent-hosts.json`, hook nie istnieje lub nie jest wykonywalny, albo
@@ -36,10 +37,11 @@ rzeczywistości sprawdzany.
 2. Gdy brakuje plików hostów, zbootstrapuj je z huba:
    `./scripts/install-agent-hosts.sh --source <hub> --target <repo>`, albo
    zaadoptuj bieżącą wersję standardu (`scripts/create_adoption_lock.py`).
-3. Dla `001`–`003` zaalokuj ticket przez `./project/new-ticket.sh`, przełącz się
-   na branch zawierający `ticket-NNN` i ustaw status `IN_PROGRESS`. Przy
-   terminalnym zamknięciu użyj statusu zadeklarowanego w
-   `ticket.closedStatuses` oraz staguj wyłącznie ograniczone dowody governance.
+3. Dla `001`, `002` i `007` zaalokuj ticket przez `./project/new-ticket.sh`,
+   przełącz się na branch zawierający `ticket-NNN`, ustaw status `IN_PROGRESS`
+   i dołącz materialną zmianę poza katalogiem ticketu, TODO, indeksem i
+   registry. Dla `003` nie twórz commita: chroniony kontroler dostawy zapisuje
+   terminalny receipt poza checkoutem autora.
 4. Potwierdź stan: `python3 scripts/agent_host_check.py --root .`.
 
 ## Verification

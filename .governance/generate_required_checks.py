@@ -33,6 +33,7 @@ DECLARATION_CANDIDATES = (
     Path("governance/required-checks.json"),
 )
 IGNORED_FIELD = "circularGovernanceChecksIgnoredByValidator"
+HUB_REPOSITORY = "wellmanifest/new-project"
 
 
 def scalar(raw: str) -> str:
@@ -44,14 +45,13 @@ def scalar(raw: str) -> str:
     return value
 
 
-def published_checks(workflow: Path, callers: list[str]) -> list[str]:
+def published_checks_text(text: str, callers: list[str]) -> list[str]:
     """Job display names, mirroring how GitHub names a check context.
 
     A job that calls a reusable workflow is collected into ``callers`` instead of
     the returned names: it publishes one context per job of the called workflow,
     named "<caller> / <callee job>", and the callee lives in another repository.
     """
-    text = workflow.read_text(encoding="utf-8")
     if "pull_request" not in text:
         return []  # A workflow that never runs on a PR cannot gate one.
     names: list[str] = []
@@ -91,6 +91,10 @@ def published_checks(workflow: Path, callers: list[str]) -> list[str]:
     return names
 
 
+def published_checks(workflow: Path, callers: list[str]) -> list[str]:
+    return published_checks_text(workflow.read_text(encoding="utf-8"), callers)
+
+
 def repository_name(root: Path) -> str | None:
     try:
         url = subprocess.run(
@@ -103,22 +107,36 @@ def repository_name(root: Path) -> str | None:
     return match.group(1) if match else None
 
 
-def declaration_for(root: Path, ignored: tuple[str, ...] = ()) -> dict[str, Any] | None:
+def declaration_for(
+    root: Path,
+    ignored: tuple[str, ...] = (),
+    workflow_payloads: dict[str, bytes] | None = None,
+) -> dict[str, Any] | None:
     repository = repository_name(root)
     if repository is None:
         return None
     directory = root / ".github/workflows"
-    if not directory.is_dir():
+    overlays = workflow_payloads or {}
+    workflows: dict[str, tuple[Path, bytes | None]] = {}
+    if directory.is_dir():
+        for workflow in sorted(directory.glob("*.y*ml")):
+            relative = workflow.relative_to(root).as_posix()
+            workflows[relative] = (workflow, None)
+    for relative, content in overlays.items():
+        if not relative.startswith(".github/workflows/") or not relative.endswith((".yml", ".yaml")):
+            continue
+        workflows[relative] = (root / relative, content)
+    if not workflows:
         return None
     checks: list[dict[str, str]] = []
     callers: list[str] = []
-    for workflow in sorted(directory.glob("*.y*ml")):
-        relative = workflow.relative_to(root).as_posix()
-        for name in published_checks(workflow, callers):
-            # A repository may declare a check that its own validator must not
-            # wait for, to avoid a circular gate; keep that exclusion.
-            if name in ignored:
-                continue
+    for relative, (workflow, content) in sorted(workflows.items()):
+        names = (
+            published_checks_text(content.decode("utf-8"), callers)
+            if content is not None
+            else published_checks(workflow, callers)
+        )
+        for name in names:
             checks.append({"name": name, "workflowFile": relative})
     if not checks and not callers:
         return None
@@ -160,6 +178,37 @@ def declared_names(document: dict[str, Any] | None) -> list[str]:
     return sorted(str(name) for name in names or [])
 
 
+def inspect_declaration(root: Path, write: bool) -> dict[str, Any]:
+    current = current_declaration(root)
+    inherited_hub_declaration = (current or {}).get("repository") == HUB_REPOSITORY
+    ignored = () if inherited_hub_declaration else tuple((current or {}).get(IGNORED_FIELD, ()) or ())
+    derived = declaration_for(root)
+    if derived is not None and ignored:
+        derived[IGNORED_FIELD] = list(ignored)
+    entry = {
+        "repository": root.name,
+        "derived": derived,
+        "currentRepository": (current or {}).get("repository"),
+        "currentNames": declared_names(current),
+        "derivedNames": declared_names(derived),
+    }
+    entry["agrees"] = (
+        derived is not None
+        and entry["currentRepository"] == derived["repository"]
+        and entry["currentNames"] == entry["derivedNames"]
+    )
+    entry["reusableWorkflowCallers"] = (derived or {}).get("reusableWorkflowCallers", [])
+    if write and derived is not None and not entry["agrees"]:
+        if entry["reusableWorkflowCallers"]:
+            entry["written"] = False  # A caller's context name cannot be derived here.
+        else:
+            declaration_path(root).write_text(
+                json.dumps(derived, indent=2) + "\n", encoding="utf-8"
+            )
+            entry["written"] = True
+    return entry
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("roots", nargs="+", help="Repository roots to inspect")
@@ -169,33 +218,7 @@ def main(argv: list[str] | None = None) -> int:
 
     report: list[dict[str, Any]] = []
     for raw in args.roots:
-        root = Path(raw).resolve()
-        current = current_declaration(root)
-        ignored = tuple((current or {}).get(IGNORED_FIELD, ()) or ())
-        derived = declaration_for(root, ignored)
-        if derived is not None and ignored:
-            derived[IGNORED_FIELD] = list(ignored)
-        entry = {
-            "repository": root.name,
-            "derived": derived,
-            "currentRepository": (current or {}).get("repository"),
-            "currentNames": declared_names(current),
-            "derivedNames": declared_names(derived),
-        }
-        entry["agrees"] = (
-            derived is not None
-            and entry["currentRepository"] == derived["repository"]
-            and entry["currentNames"] == entry["derivedNames"]
-        )
-        entry["reusableWorkflowCallers"] = (derived or {}).get("reusableWorkflowCallers", [])
-        if args.write and derived is not None and not entry["agrees"]:
-            if entry["reusableWorkflowCallers"]:
-                entry["written"] = False  # A caller's context name cannot be derived here.
-            else:
-                declaration_path(root).write_text(
-                    json.dumps(derived, indent=2) + "\n", encoding="utf-8"
-                )
-                entry["written"] = True
+        entry = inspect_declaration(Path(raw).resolve(), args.write)
         report.append(entry)
 
     if args.format == "json":

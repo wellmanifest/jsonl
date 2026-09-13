@@ -3,45 +3,42 @@
 ## Situation
 
 Kody `GOV-INTENT-001`–`GOV-INTENT-003` oznaczają, że diff implementacyjny nie
-ma ważnego, wcześniejszego mandatu. Kolejno: ticket nie był w stanie
-implementacyjnym, `intent.json` jest nieobecny lub niepoprawny, albo intent nie
-istniał w rodzicu pierwszego commita implementacyjnego.
+ma ważnego mandatu. Kolejno: ticket nie był w stanie implementacyjnym,
+`intent.json` jest nieobecny lub niepoprawny, albo intent nie istnieje w drzewie
+pierwszego materialnego commita.
 
 ## Meaning
 
-Intent jest planem, który ma być przejrzany **zanim** powstanie kod. Ticket
-scaffoldowany i zaimplementowany w jednym commicie nie spełnia tego wymogu,
-nawet jeśli treść diffu jest poprawna: w rodzicu tego commita `intent.json` nie
-istniał, więc nie było czego zatwierdzić.
+Intent jest planem, który kontroler zapisuje i waliduje **zanim** rozpocznie
+edycję. Granica czasowa dotyczy sesji wykonawczej, nie wymaga osobnego commita.
+Intent może wejść atomowo z pierwszą materialną zmianą, o ile znajduje się w
+drzewie tego commita i wcześniejsza autoryzacja sesji wiąże dokładnie ten zakres.
 
 `GOV-INTENT-003` jest osobnym faktem od `GOV-SCOPE-001`. Zakres może być
 idealnie zgodny z `allowedPaths`, a mandat i tak nie powstał na czas.
 
 ## Safe resolution
 
-1. Zbuduj gałąź w kolejności: commit planu, potem implementacja.
+1. Zbuduj jeden atomowy commit zawierający intent i materialną zmianę:
 
    ```
-   plan(ticket-NNN): record intent      PLAN / WAIT_FOR_APPROVAL
-   feat|fix|chore(...): implementation  IN_PROGRESS / EDIT
-   chore(...): move to PUBLICATION      IN_PROGRESS / PUBLICATION
+   feat|fix|chore(ticket-NNN): intent + material implementation
    ```
 
-   Commit planu zawiera `project/ticket-NNN/**`, `TODO.md` i indeks ticketów.
-   Nie zawiera żadnej ścieżki implementacyjnej.
+   Kontroler najpierw waliduje `intent.json` i session authorization, następnie
+   edytuje implementację, a na końcu commit obejmuje oba elementy.
 
-2. `DONE / DONE` ustaw dopiero w osobnym governance-only closure, zbudowanym z
-   zintegrowanej gałęzi domyślnej po trusted merge.
+2. Po trusted merge nie edytuj repozytorium. Chroniony kontroler zapisuje
+   zewnętrzny receipt terminalny związany z PR head, merge SHA i checks.
 
-3. Gdy gałąź nie została jeszcze opublikowana, przebuduj ją. Gdy historia jest
-   już opublikowana i zaufana, nie przepisuj jej — otwórz następcę z poprawną
-   kolejnością i zamknij poprzednika bez merge'a.
+3. Gdy kod został zacommitowany przed intentem, przebuduj nieopublikowaną gałąź
+   atomowo. Nie przepisuj opublikowanej, zaufanej historii.
 
 ## Verification
 
 `./project/governance-check.sh` bez argumentów bada **drzewo robocze**, nie
-historię commitów. Jednocommitowy ticket raportuje `GOV-PASS` w tym trybie i
-mimo to zostaje odrzucony przez chronioną bramkę, która analizuje zakres.
+historię commitów. Chroniona bramka zakresowa potwierdza, że intent istnieje w
+pierwszym materialnym commicie.
 
 Dowodem jest wyłącznie tryb zakresowy:
 
@@ -56,11 +53,9 @@ wywołania nie jest wystarczającym dowodem.
 
 - Nie traktuj `GOV-PASS` z domyślnego, bezargumentowego wywołania jako dowodu
   poprawnej kolejności commitów.
-- Nie przepisuj opublikowanej, zaufanej historii, żeby wstawić brakujący commit
-  planu; użyj następcy.
+- Nie przepisuj opublikowanej, zaufanej historii.
 - Nie zamykaj ticketu na niescalonej gałęzi pełnego diffu.
-- Nie łącz scaffoldu ticketu ze zmianą implementacyjną w jednym commicie, nawet
-  gdy zmiana jest jednolinijkowa.
+- Nie twórz osobnego plan-only commita ani closure commita.
 
 ## Related rules
 
