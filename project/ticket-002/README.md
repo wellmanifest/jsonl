@@ -1,4 +1,4 @@
-# Ticket 002: Adopt published new-project 0.20.26 governance
+# Ticket 002: Adopt published new-project 0.20.27 governance
 
 - **ID**: ticket-002
 - **Owner**: unresolved:human
@@ -8,7 +8,7 @@
 
 ## Goal and scope
 
-Adopt published new-project 0.20.26 at `8d86cd61404d51809532a8292ce9c0cc02ed6157` through Goal. Preserve JSONL framing, schemas, examples, other tickets and the existing required test. The integration contract is not redesigned.
+Adopt published new-project 0.20.27 at `6d83b42f79058f95e265df47092dcfc2c5f3b56a` through Goal. Preserve JSONL framing, schemas, examples, other tickets and the existing required test. The integration contract is not redesigned.
 
 ## Session execution authorization
 
@@ -23,3 +23,9 @@ Before allocation, clean main matched fetched origin/main at `3589c08c54eeaf9459
 ## Risks and ownership
 
 Adoption installs root ignores and clone-local instance metadata absent from the accepted base. Their exact governance ownership is declared before generation. Published standard defaults replace older standard-owned limits; no additional local exceptions are introduced. The generator retains obsolete ticket-file list extensions: normalize only these extensions to the exact current managed-base lists, without changing the base or lock. Raw output and receipts remain external. Historical ticket-001 completion is reconciled from GitHub evidence without editing its prose. Missing external evidence blocks merge.
+
+## Continued independent-review repair
+
+https://github.com/wellmanifest/jsonl/issues/3 tracks the resumed request. Published source PR wellmanifest/new-project#335 removes the text-based Goal refusal exception flagged by the prior review. The expired original lease was closed with CAS receipts after verifying a clean checkout and no active process in it; continuation uses a fresh fenced lease for the same ticket, branch and PR. The original branch/path slug remains stable. Apply 0.20.27 through Goal, preserving the original PR accepted base and target-owned JSONL settings.
+
+Validation of 0.20.27: Goal immutable adoption check reports up-to-date; exact-base governance passes; all seven JSONL self-tests and both candidate records pass. Target-owned adoption metadata was refreshed from the published Git blobs and installed files. The full domain-pack audit still reports eight pre-existing higher-level/missing-pack findings; its mode remains audit and this ticket does not claim S3/S4 fleet enforcement. Project-owned Planfile `wellmanifest/jsonl::PLF-001` records Issue #3, ticket-002, the existing canonical worktree and PR #2.

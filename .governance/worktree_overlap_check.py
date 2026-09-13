@@ -498,6 +498,12 @@ def changes_against_shared_default(first, second, first_dirty, second_dirty, fir
             # edited under another name. Preserve the conservative path
             # model until attribution can follow those identities too.
             if not first_renames and not second_renames:
+                # The default-base comparison removes inherited main changes;
+                # it must not reintroduce feature commits shared by both HEADs.
+                # Pair-relative paths exclude those commits after strict reads.
+                # On unreadable pair history they retain the conservative input.
+                first_committed &= first_changes
+                second_committed &= second_changes
                 first_changes = first_committed | first_dirty
                 second_changes = second_committed | second_dirty
                 shared_default = True
@@ -514,6 +520,8 @@ def contested_paths(
     Prefer each writer's contribution relative to the same observed origin
     default-branch revision. A pair's older common ancestor includes main's
     history in a fresh writer, even when that writer edits unrelated files.
+    Intersect with pair-relative contributions so shared feature history is
+    excluded too. Dirty paths and conservative attribution remain independent.
     Missing or divergent observations retain the common-ancestor fallback.
     """
     first_dirty = set(first.dirty_paths) - pending_main_imports(first.path)

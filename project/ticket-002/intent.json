@@ -1,7 +1,7 @@
 {
   "schema": "new-project.intent/v3",
   "ticket": "ticket-002",
-  "summary": "Adopt published new-project 0.20.26 governance in JSONL",
+  "summary": "Adopt published new-project 0.20.27 governance in JSONL",
   "workstream": "governance",
   "classification": {
     "kind": "SERVICE",
@@ -114,7 +114,7 @@
     "standardAdoption": {
       "sourceRepository": "wellmanifest/new-project",
       "fromRevision": "4e0b7d6d888f1b4771781d25fa977f15725bcce5",
-      "toRevision": "8d86cd61404d51809532a8292ce9c0cc02ed6157"
+      "toRevision": "6d83b42f79058f95e265df47092dcfc2c5f3b56a"
     },
     "architecture": {
       "status": "accepted",

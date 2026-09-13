@@ -367,7 +367,9 @@ def _unmerged_ticket_branch(root: Path, ticket: str, target: str) -> bool:
     number = ticket.removeprefix("ticket-")
     listed = _git(
         root, "for-each-ref", "--format=%(refname)",
+        f"refs/remotes/origin/ticket/{number}",
         f"refs/remotes/origin/ticket/{number}-*",
+        f"refs/heads/ticket/{number}",
         f"refs/heads/ticket/{number}-*",
         check=False,
     )

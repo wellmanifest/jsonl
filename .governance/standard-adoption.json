@@ -12,8 +12,8 @@
   "adoptions": [
     {
       "id": "wellmanifest/new-project",
-      "version": "0.20.26",
-      "revision": "8d86cd61404d51809532a8292ce9c0cc02ed6157",
+      "version": "0.20.27",
+      "revision": "6d83b42f79058f95e265df47092dcfc2c5f3b56a",
       "model": "local-conformance",
       "level": "S2",
       "artifacts": [
@@ -191,7 +191,7 @@
         },
         {
           "target": ".governance/manifest.base.json",
-          "sha256": "a45f12b3c3cdd380f57af7c3f2f6463ba989fac3009bfca29502099211f2b819"
+          "sha256": "2e12e1411d9cfedd3f893ddc04f2051872b65951f9ee7003b534ef23a9a301b6"
         },
         {
           "target": ".governance/manifest.schema.json",
@@ -203,7 +203,7 @@
         },
         {
           "target": ".governance/precommit_standard_update.py",
-          "sha256": "7be31f9fe21b1e9de48841cd1d62af053fa2f358e5918e2805cfc3f1e3960c59"
+          "sha256": "c91e2bf9ae9d6ccc77bce0e61450c818a5961edee5bfde3b60426da88e296b0f"
         },
         {
           "target": ".governance/remediation-intent.schema.json",
@@ -271,7 +271,7 @@
         },
         {
           "target": ".governance/ticket_activity.py",
-          "sha256": "b3aac41f53f1d6d9fcd9b309e3d6bd5c923b825d5ee34644aefbaa63ab3c85ad"
+          "sha256": "30b1c6eb1d6a3d0dbb11a30840d6e67aedf4cb0bf797f1adf7fdf46f17ccf5d5"
         },
         {
           "target": ".governance/ticket_allocation.py",
@@ -319,7 +319,7 @@
         },
         {
           "target": ".governance/worktree_overlap_check.py",
-          "sha256": "4f89e3bbb4e23b6690e20038b4dbcf5db91fbcc0e191d90fb1aea424cf54ac99"
+          "sha256": "2e3fe11a2df33fa719195300608b4d0fc1eabfa3493fed2c3ca1545d3d73d09b"
         },
         {
           "target": ".governance/worktree_path_check.py",
@@ -389,18 +389,18 @@
       "evidence": [
         {
           "level": "S0",
-          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/8d86cd61404d51809532a8292ce9c0cc02ed6157/POLICY.md",
+          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/6d83b42f79058f95e265df47092dcfc2c5f3b56a/POLICY.md",
           "sha256": "69519ad09560a634df038257d6d940a5977489ac5c4aa7f6d424d6861ffd984f"
         },
         {
           "level": "S1",
-          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/8d86cd61404d51809532a8292ce9c0cc02ed6157/scripts/governance_check.py",
+          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/6d83b42f79058f95e265df47092dcfc2c5f3b56a/scripts/governance_check.py",
           "sha256": "48a1cf1231031e6f1216ae556a4ca5434c1e3e775c246990e16d78708fe2176d"
         },
         {
           "level": "S2",
           "uri": "./.governance/manifest.lock.json",
-          "sha256": "e194ae10c2702fca3cdf456c06a707af3542de014df31aad91302ec4d1182e14"
+          "sha256": "c03deb743e31fbc18422b61688c5a8c2995fea35b223bf3c03fee799e96202ea"
         }
       ]
     }
