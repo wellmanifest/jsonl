@@ -1,9 +1,14 @@
 {
   "schema": "new-project.diagnostics/v2",
   "codes": {
+    "GOV-WORK-START-001": {
+      "message": "New work admission requires reconciliation of existing repository work or incomplete observations.",
+      "remediation": "Run the managed work-start check; reuse the matching ticket, assist read-only, arrange a fenced handoff or serialize. Preserve unknown work; do not force allocation.",
+      "documentation": "error/GOV-WORK-START.md"
+    },
     "GOV-AGENT-HOST-001": {
       "message": "Commit is not bound to an IN_PROGRESS ticket-NNN branch.",
-      "remediation": "Allocate through ./project/new-ticket.sh and commit on a branch whose name contains ticket-NNN.",
+      "remediation": "Inspect existing branches and worktrees first; reuse the allocated ticket checkout. Allocate through ./project/new-ticket.sh only after work-start admission; never rename or discard unknown work to satisfy the hook.",
       "documentation": "error/GOV-AGENT-HOST.md"
     },
     "GOV-AGENT-HOST-002": {
@@ -12,8 +17,8 @@
       "documentation": "error/GOV-AGENT-HOST.md"
     },
     "GOV-AGENT-HOST-003": {
-      "message": "Governance-only terminal closure violates its bounded evidence.",
-      "remediation": "Stage the terminal ticket evidence alone; a closure may only add or modify bounded governance files.",
+      "message": "A repository commit attempts to write terminal ticket closure state.",
+      "remediation": "Leave the reviewed repository payload unchanged and let the protected delivery controller emit the external merge or no-change receipt.",
       "documentation": "error/GOV-AGENT-HOST.md"
     },
     "GOV-AGENT-HOST-004": {
@@ -29,6 +34,11 @@
     "GOV-AGENT-HOST-006": {
       "message": "core.hooksPath does not point at the managed hook directory.",
       "remediation": "Activate the managed hook: git config core.hooksPath .githooks in this clone.",
+      "documentation": "error/GOV-AGENT-HOST.md"
+    },
+    "GOV-AGENT-HOST-007": {
+      "message": "A staged commit contains only ticket tracking carriers.",
+      "remediation": "Add the material deliverable, or emit an external no-change receipt and create no repository commit.",
       "documentation": "error/GOV-AGENT-HOST.md"
     },
     "GOV-APPROVAL-001": {
@@ -64,6 +74,11 @@
     "GOV-BASE-001": {
       "message": "The target branch or base SHA differs from the approved delivery contract.",
       "remediation": "Rebase or rebuild from the accepted base, then update intent only through an authorized scope review.",
+      "documentation": null
+    },
+    "GOV-BASE-002": {
+      "message": "Target-branch advancement overlaps a component declared by the active ticket.",
+      "remediation": "Refresh the branch, rerun validation and obtain fresh scope approval; do not repin for unrelated target changes.",
       "documentation": null
     },
     "GOV-BOOT-001": {
@@ -125,6 +140,21 @@
       "message": "Tickets declared as conflicting are active at the same time.",
       "remediation": "Move one ticket to BACKLOG, PLAN or BLOCKED until the conflicting work reaches a terminal state.",
       "documentation": null
+    },
+    "GOV-CONTINUITY-001": {
+      "message": "A work-continuity checkpoint is malformed, unsafe or cannot preserve a dirty workspace.",
+      "remediation": "Rebuild the bounded checkpoint from observable state; commit authorized work or provide a content-addressed, secret-scanned external snapshot.",
+      "documentation": "error/GOV-WORK-CONTINUITY.md"
+    },
+    "GOV-CONTINUITY-002": {
+      "message": "The work-continuity receipt chain is stale, rebound or non-monotonic.",
+      "remediation": "Recover the complete append-only chain from the protected receipt store and extend only its latest valid checkpoint.",
+      "documentation": "error/GOV-WORK-CONTINUITY.md"
+    },
+    "GOV-CONTINUITY-003": {
+      "message": "A continuity checkpoint diverges from current repository observation.",
+      "remediation": "Preserve both states and route to reconciliation or BLOCKED; do not reset, overwrite, restore or reuse a stale fencing token.",
+      "documentation": "error/GOV-WORK-CONTINUITY.md"
     },
     "GOV-DECISION-001": {
       "message": "A repository-changing autonomous decision lacks an append-only record or rewrites earlier evidence.",
@@ -212,13 +242,18 @@
       "documentation": "error/GOV-INTENT.md"
     },
     "GOV-INTENT-003": {
-      "message": "Ticket intent was not committed before the first implementation commit.",
-      "remediation": "Rebuild the branch so the approved intent commit precedes implementation without rewriting trusted published history.",
+      "message": "Ticket intent is absent from the first material implementation commit.",
+      "remediation": "Include the validated intent atomically with the first material change; do not manufacture a separate plan-only commit.",
       "documentation": "error/GOV-INTENT.md"
     },
     "GOV-MANIFEST-001": {
       "message": "Manifest or managed governance contract is missing, unreadable or structurally invalid.",
       "remediation": "Restore the complete pinned governance package and validate its JSON contracts.",
+      "documentation": null
+    },
+    "GOV-MATERIAL-001": {
+      "message": "The changeset contains only ticket tracking carriers and no material deliverable.",
+      "remediation": "Add a material source, test, configuration, standard or requested documentation change; if there is no delta, emit an external no-change receipt without a commit or PR.",
       "documentation": null
     },
     "GOV-OWNER-001": {
@@ -249,6 +284,11 @@
     "GOV-POLICY-DSL-001": {
       "message": "CONTRIBUTING.md or its pinned Policy DSL runtime is invalid.",
       "remediation": "Restore the managed Policy DSL files or correct the selected dsl fences, then rerun the governance gate.",
+      "documentation": null
+    },
+    "GOV-PULL-REQUEST-STATE-001": {
+      "message": "The protected workflow cannot bind a live pull-request state to its event.",
+      "remediation": "Re-acquire the pull request through the GitHub API and retry the workflow; do not skip open-PR ticket, scope or approval enforcement.",
       "documentation": null
     },
     "GOV-REMEDIATION-001": {
@@ -291,6 +331,11 @@
       "remediation": "Use one declared active, non-active or closed status and a compatible workflow state.",
       "documentation": null
     },
+    "GOV-STANDARD-UPDATE-001": {
+      "message": "The pinned Wellmanifest standard cannot be verified or safely prepared during pre-commit.",
+      "remediation": "Install a compatible Goal release and use one active standard-adoption ticket to prepare, review and restage the immutable update.",
+      "documentation": "error/GOV-STANDARD-UPDATE.md"
+    },
     "GOV-SYNC-001": {
       "message": "A managed governance file does not match its pinned SHA-256 digest.",
       "remediation": "Adopt or upgrade the complete immutable package through Goal; do not patch managed payload files manually.",
@@ -298,8 +343,13 @@
     },
     "GOV-TICKET-001": {
       "message": "Implementation changed without exactly one active ticket.",
-      "remediation": "Keep the owning ticket IN_PROGRESS through implementation publication and use a governance-only closure after trusted merge.",
+      "remediation": "Keep the owning ticket IN_PROGRESS through implementation publication; after merge, let the protected controller emit the external terminal receipt without a repository closure commit.",
       "documentation": "error/GOV-TICKET-001.md"
+    },
+    "GOV-TICKET-ACTIVITY-001": {
+      "message": "Ticket activity cannot be resolved safely from the managed policy and clone-external terminal receipt registry.",
+      "remediation": "Keep the status projection active, then reconcile or recover the clone-external registry from protected evidence.",
+      "documentation": "error/GOV-TICKET-ACTIVITY.md"
     },
     "GOV-TICKET-002": {
       "message": "More than one active ticket exists where the manifest permits only one.",
@@ -329,6 +379,16 @@
     "GOV-TICKET-ALLOCATION-002": {
       "message": "Linked worktrees assign different intents to the same ticket ID.",
       "remediation": "Stop both writers, preserve both heads and reallocate the later intent through project/new-ticket.sh before rebuilding its branch.",
+      "documentation": "error/GOV-TICKET-ALLOCATION.md"
+    },
+    "GOV-TICKET-ALLOCATION-003": {
+      "message": "A distributed writer lacks a valid receipt from the registered atomic ticket allocator.",
+      "remediation": "Submit the emitted exact request to the configured process URI and retry with its fresh fenced receipt; never choose a local number.",
+      "documentation": "error/GOV-TICKET-ALLOCATION.md"
+    },
+    "GOV-TICKET-ALLOCATION-004": {
+      "message": "A registered allocation resolves to a ticket identity already visible in repository state.",
+      "remediation": "Continue the existing claim or request a fresh fenced allocation after reconciliation; do not recreate, rename or overwrite it.",
       "documentation": "error/GOV-TICKET-ALLOCATION.md"
     },
     "GOV-TICKET-LOCK-001": {
@@ -405,6 +465,11 @@
       "message": "The worktree overlap audit could not be completed safely.",
       "remediation": "Repair repository metadata or narrow the explicit workspace root before relying on the guard.",
       "documentation": "error/GOV-WORKTREE-OVERLAP.md"
+    },
+    "GOV-BRANCH-INTENT-001": {
+      "message": "Branch intent reconciliation is incomplete, stale or invalid.",
+      "remediation": "Preserve history, reacquire the complete accepted criterion inventory and independently verified receipts at the exact source/target SHA; retain unknown work for review. Report conformance never authorizes deletion.",
+      "documentation": null
     }
   }
 }

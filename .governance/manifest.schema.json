@@ -104,8 +104,8 @@
       "properties": {
         "root": { "$ref": "#/$defs/path" },
         "directoryPattern": { "type": "string", "minLength": 1 },
-        "requiredFiles": { "type": "array", "items": { "$ref": "#/$defs/path" }, "uniqueItems": true },
-        "requiredAgentFiles": { "type": "array", "items": { "$ref": "#/$defs/glob" }, "uniqueItems": true },
+        "requiredFiles": { "const": ["README.md", "intent.json"] },
+        "requiredAgentFiles": { "const": [] },
         "activeStatuses": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
         "nonActiveStatuses": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
         "closedStatuses": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
@@ -173,8 +173,8 @@
       ],
       "properties": {
         "requiredForImplementation": { "type": "boolean" },
-        "maxActiveMinutes": { "type": "integer", "minimum": 1, "maximum": 30 },
-        "checkpointMinutes": { "type": "integer", "minimum": 1, "maximum": 29 },
+        "maxActiveMinutes": { "type": "integer", "minimum": 1, "maximum": 240 },
+        "checkpointMinutes": { "type": "integer", "minimum": 1, "maximum": 239 },
         "allowedComplexityClasses": {
           "type": "array",
           "items": { "enum": ["XS", "S", "M", "L"] },

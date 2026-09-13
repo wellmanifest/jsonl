@@ -7,18 +7,18 @@
   "required": ["schema", "ticket", "summary", "workstream", "allowedPaths", "forbiddenPaths", "stacks", "dependsOn", "conflictsWith", "integrationTicket"],
   "properties": {
     "schema": { "enum": ["new-project.intent/v2", "new-project.intent/v3"] },
-    "ticket": { "type": "string", "pattern": "^ticket-[0-9]{3}$" },
+    "ticket": { "type": "string", "pattern": "^ticket-[0-9]{3,}$" },
     "summary": { "type": "string", "minLength": 1 },
     "workstream": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
     "allowedPaths": { "type": "array", "items": { "$ref": "#/$defs/glob" }, "minItems": 1, "uniqueItems": true },
     "forbiddenPaths": { "type": "array", "items": { "$ref": "#/$defs/glob" }, "uniqueItems": true },
     "stacks": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
-    "dependsOn": { "type": "array", "items": { "type": "string", "pattern": "^ticket-[0-9]{3}$" }, "uniqueItems": true },
-    "conflictsWith": { "type": "array", "items": { "type": "string", "pattern": "^ticket-[0-9]{3}$" }, "uniqueItems": true },
+    "dependsOn": { "type": "array", "items": { "type": "string", "pattern": "^ticket-[0-9]{3,}$" }, "uniqueItems": true },
+    "conflictsWith": { "type": "array", "items": { "type": "string", "pattern": "^ticket-[0-9]{3,}$" }, "uniqueItems": true },
     "integrationTicket": {
       "oneOf": [
         { "type": "null" },
-        { "type": "string", "pattern": "^ticket-[0-9]{3}$" }
+        { "type": "string", "pattern": "^ticket-[0-9]{3,}$" }
       ]
     },
     "classification": {
@@ -85,7 +85,7 @@
           "uniqueItems": true
         },
         "complexity": { "enum": ["XS", "S", "M", "L"] },
-        "estimatedMinutes": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "estimatedMinutes": { "type": "integer", "minimum": 1, "maximum": 240 },
         "standardAdoption": {
           "type": "object",
           "additionalProperties": false,
@@ -131,6 +131,29 @@
                     "pattern": "^(?!/)(?![A-Za-z]:[/\\\\])(?!.*(?:^|/)\\.\\.(?:/|$))[^*?\\[]+$"
                   },
                   "baseDigest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            },
+            "targetOwnedTransitions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["path", "baseDigest", "headDigest"],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^(?!/)(?![A-Za-z]:[/\\\\])(?!.*(?:^|/)\\.\\.(?:/|$))[^*?\\[]+$"
+                  },
+                  "baseDigest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "headDigest": {
                     "type": "string",
                     "pattern": "^[0-9a-f]{64}$"
                   }

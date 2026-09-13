@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 import os
-from pathlib import Path
+import re
 import subprocess
 import sys
+from pathlib import Path
 
 
 class GovernanceGateError(RuntimeError):
@@ -25,10 +27,71 @@ def _git(root: Path, *args: str) -> str | None:
     return result.stdout.strip()
 
 
+def _activate_managed_hook(root: Path) -> None:
+    """Activate the installed clone-local hook before enforcing the gate."""
+    contract_path = root / ".governance" / "agent-hosts.json"
+    if not contract_path.is_file():
+        return
+    try:
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        hook = contract["hook"]
+        hook_path = hook["path"]
+        hooks_config = hook["hooksPathConfig"]
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, KeyError, TypeError):
+        return
+    if not all(isinstance(value, str) and value for value in (hook_path, hooks_config)):
+        return
+    hook_file = Path(hook_path)
+    config_path = Path(hooks_config)
+    if (
+        hook_file.is_absolute()
+        or config_path.is_absolute()
+        or ".." in hook_file.parts
+        or ".." in config_path.parts
+        or not (root / hook_file).is_file()
+    ):
+        return
+    subprocess.run(
+        ["git", "config", "--local", "core.hooksPath", hooks_config],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def _github_event_base(root: Path) -> str | None:
+    event_path = os.environ.get("GITHUB_EVENT_PATH", "").strip()
+    if not event_path:
+        return None
+    try:
+        event = json.loads(Path(event_path).read_text(encoding="utf-8"))
+        base = event["pull_request"]["base"]["sha"]
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, KeyError, TypeError):
+        return None
+    if not isinstance(base, str) or re.fullmatch(r"[0-9a-f]{40}", base) is None:
+        return None
+    if _git(root, "cat-file", "-e", f"{base}^{{commit}}") is None:
+        subprocess.run(
+            ["git", "fetch", "--no-tags", "--depth=1", "origin", base],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    if _git(root, "cat-file", "-e", f"{base}^{{commit}}") is not None:
+        return base
+    return None
+
+
 def _resolve_base(root: Path) -> str:
     explicit = os.environ.get("WELLMANIFEST_BASE_SHA", "").strip()
     if explicit and _git(root, "cat-file", "-e", f"{explicit}^{{commit}}") is not None:
         return explicit
+
+    github_event_base = _github_event_base(root)
+    if github_event_base:
+        return github_event_base
 
     candidates: list[str] = []
     github_base = os.environ.get("GITHUB_BASE_REF", "").strip()
@@ -76,6 +139,7 @@ def pytest_sessionstart(session: object) -> None:
     if os.environ.get("WELLMANIFEST_GOVERNANCE_ACTIVE") == "1":
         raise GovernanceGateError("GOV-PACKAGING-003: recursive gate invocation")
 
+    _activate_managed_hook(root)
     base = _resolve_base(root)
     command = [str(gate), "--base", base]
     for path in _changed_paths(root, base):

@@ -34,7 +34,7 @@
       ],
       "workstream": "integration"
     },
-    "maxActiveTicketsPerWorkstream": 1,
+    "maxActiveTicketsPerWorkstream": 4,
     "mode": "workstreams",
     "rejectActiveScopeOverlap": true,
     "workstreams": {
@@ -49,6 +49,8 @@
       },
       "governance": {
         "ownedPaths": [
+          ".gitignore",
+          ".subactor/manifest.json",
           ".governance/**",
           "AGENTS.md",
           "README.md",
@@ -109,7 +111,7 @@
       "M",
       "L"
     ],
-    "checkpointMinutes": 25,
+    "checkpointMinutes": 30,
     "dependencyManifestPaths": [
       "package.json",
       "pyproject.toml",
@@ -117,7 +119,7 @@
       "Cargo.toml",
       "pom.xml"
     ],
-    "maxActiveMinutes": 30,
+    "maxActiveMinutes": 120,
     "maxAffectedComponents": 5,
     "maxImplementationFiles": 15,
     "maxPublicInterfaceChanges": 3,
@@ -182,7 +184,8 @@
     "TODO.md",
     "project/TICKETS.md",
     "project/ticket-*/**",
-    "config/artifact-registry.json"
+    "config/artifact-registry.json",
+    ".governance/standard-adoption.json"
   ],
   "repository": {
     "componentRoots": [],
@@ -202,7 +205,7 @@
   "stacks": [],
   "standard": {
     "id": "wellmanifest/new-project",
-    "version": "0.18.10"
+    "version": "0.20.26"
   },
   "ticket": {
     "activeStatuses": [
@@ -212,7 +215,7 @@
       "DONE",
       "CANCELLED"
     ],
-    "directoryPattern": "^ticket-[0-9]{3}$",
+    "directoryPattern": "^ticket-[0-9]{3,}$",
     "implementationStates": [
       "EDIT",
       "VALIDATION",
@@ -224,14 +227,9 @@
       "PLAN",
       "BLOCKED"
     ],
-    "requiredAgentFiles": [
-      "ai-*.md",
-      "ai-*-logs.txt"
-    ],
+    "requiredAgentFiles": [],
     "requiredFiles": [
       "README.md",
-      "preprompt.md",
-      "changelog.md",
       "intent.json"
     ],
     "root": "project"
