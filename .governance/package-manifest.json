@@ -170,6 +170,12 @@
       "executable": false
     },
     {
+      "source": "error/GOV-APPROVAL.md",
+      "target": ".governance/error/GOV-APPROVAL.md",
+      "strategy": "managed",
+      "executable": false
+    },
+    {
       "source": "error/GOV-REMEDIATION-INTENT.md",
       "target": ".governance/error/GOV-REMEDIATION-INTENT.md",
       "strategy": "managed",

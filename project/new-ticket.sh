@@ -7,6 +7,7 @@ TITLE="New Task Ticket"
 USERS=""
 AGENT="antigravity"
 WORKSTREAM=""
+SCOPE_ARGUMENTS=()
 FORCE_NEW=false
 ALLOCATION_KEY=""
 ALLOCATION_RECEIPT=""
@@ -30,6 +31,7 @@ Usage: ./project/new-ticket.sh [options]
   -t, --title TITLE       Ticket title
   -a, --agent ID         Agent provider/id used for ai-{ID}.md
   -w, --workstream ID    Required workstream from the governance registry
+      --path PATTERN     Repeatable owned implementation scope; persisted in intent
   -u, --users IDS        Compatibility input only; human files are not created
   -k, --kind KIND        Work kind; default SERVICE
   -p, --priority P       Work priority; default P2
@@ -85,6 +87,11 @@ while [[ $# -gt 0 ]]; do
     -w|--workstream)
       require_value "$@"
       WORKSTREAM="$2"
+      shift 2
+      ;;
+    --path)
+      require_value "$@"
+      SCOPE_ARGUMENTS+=("--path=$2")
       shift 2
       ;;
     -k|--kind)
@@ -306,6 +313,16 @@ require_classification_value kind "$KIND"
 require_classification_value priority "$PRIORITY"
 require_classification_value origin "$ORIGIN"
 
+# Validate the explicit scope before any identity reservation or registered
+# allocation request. The same argv is used for admission and both stores.
+if (( ${#SCOPE_ARGUMENTS[@]} )); then
+  if [[ -z "$TICKET_STORAGE_HELPER" ]]; then
+    echo "GOV-WORK-START-001: explicit scope requires the managed ticket storage bridge." >&2
+    exit 3
+  fi
+  python3 "$TICKET_STORAGE_HELPER" scope --root "$PWD" --workstream "$WORKSTREAM" "${SCOPE_ARGUMENTS[@]}" >/dev/null
+fi
+
 allocation_config() {
   local candidate
   for candidate in .governance/ticket-allocation.json governance/ticket-allocation.json; do
@@ -397,7 +414,7 @@ if git rev-parse --verify HEAD >/dev/null 2>&1; then
     echo "GOV-WORK-START-001: managed work-start checker is missing; restore the complete pinned package." >&2
     exit 3
   fi
-  if ! start_report="$(python3 "$start_runtime" --root . --workstream "$WORKSTREAM" --storage "$TICKET_STORAGE" --allocation-check)"; then
+  if ! start_report="$(python3 "$start_runtime" --root . --workstream "$WORKSTREAM" --storage "$TICKET_STORAGE" "${SCOPE_ARGUMENTS[@]}" --allocation-check)"; then
     printf '%s\n' "$start_report" >&2
     echo "GOV-WORK-START-001: reuse, assist, hand off or serialize existing work before new allocation; preserve all checkouts." >&2
     exit 3
@@ -528,7 +545,7 @@ if [[ "$TICKET_STORAGE" == sqlite ]]; then
   python3 "$TICKET_STORAGE_HELPER" create --root "$PWD" --ticket "$ticket_id" \
     --title "$TITLE" --workstream "$WORKSTREAM" --kind "$KIND" --priority "$PRIORITY" --origin "$ORIGIN" \
     --allocation-key "${ALLOCATION_KEY:-local:$ticket_id}" \
-    --runtime-root "$STORE_ROOT" --runtime-sha256 "$STORE_SHA256"
+    --runtime-root "$STORE_ROOT" --runtime-sha256 "$STORE_SHA256" "${SCOPE_ARGUMENTS[@]}"
   exit 0
 fi
 
@@ -639,6 +656,11 @@ else
   "integrationTicket": null
 }
 EOF
+fi
+
+if (( ${#SCOPE_ARGUMENTS[@]} )); then
+  python3 "$TICKET_STORAGE_HELPER" scope --root "$PWD" --workstream "$WORKSTREAM" \
+    --ticket "$ticket_id" "${SCOPE_ARGUMENTS[@]}" >/dev/null
 fi
 
 if [[ -n "$USERS" ]]; then

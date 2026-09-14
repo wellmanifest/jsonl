@@ -27,7 +27,7 @@ _previous_bytecode_policy = sys.dont_write_bytecode
 sys.dont_write_bytecode = True
 try:
     try:
-        from ticket_activity import ActivityError
+        from ticket_activity import ActivityError, ActivityReadBatch
         from ticket_activity import resolve as resolve_ticket_activity
     except ModuleNotFoundError:
         _activity_spec = importlib.util.spec_from_file_location(
@@ -39,6 +39,7 @@ try:
         sys.modules[_activity_spec.name] = _activity_module
         _activity_spec.loader.exec_module(_activity_module)
         ActivityError = _activity_module.ActivityError
+        ActivityReadBatch = _activity_module.ActivityReadBatch
         resolve_ticket_activity = _activity_module.resolve
 finally:
     sys.dont_write_bytecode = _previous_bytecode_policy
@@ -676,20 +677,24 @@ def ticket_scopes(root: Path) -> tuple[tuple[TicketScope, ...], tuple[str, ...]]
     statuses = active_statuses(root)
     if not statuses:
         return (), ()
-    directories = (project / name for name in virtual) if virtual is not None else project.iterdir()
-    for directory in sorted(directories, key=lambda item: item.name):
-        if (virtual is None and not directory.is_dir()) or TICKET_DIRECTORY_RE.fullmatch(directory.name) is None:
-            continue
-        override = ticket_status_override(virtual, directory)
-        try:
-            resolution = resolve_ticket_activity(root, directory, statuses, **override)
-        except ActivityError as error:
-            errors.append(f"{directory.name}: {error}")
-            resolution = None
-        if resolution is not None and not resolution.active:
-            continue
-        intent = scope_intent(directory, virtual)
-        scopes.append(ticket_scope_record(directory, intent))
+    try:
+        with ActivityReadBatch(root):
+            directories = (project / name for name in virtual) if virtual is not None else project.iterdir()
+            for directory in sorted(directories, key=lambda item: item.name):
+                if (virtual is None and not directory.is_dir()) or TICKET_DIRECTORY_RE.fullmatch(directory.name) is None:
+                    continue
+                override = ticket_status_override(virtual, directory)
+                try:
+                    resolution = resolve_ticket_activity(root, directory, statuses, **override)
+                except ActivityError as error:
+                    errors.append(f"{directory.name}: {error}")
+                    resolution = None
+                if resolution is not None and not resolution.active:
+                    continue
+                intent = scope_intent(directory, virtual)
+                scopes.append(ticket_scope_record(directory, intent))
+    except ActivityError as error:
+        errors.append(str(error))
     return tuple(scopes), tuple(errors)
 
 

@@ -12,8 +12,8 @@
   "adoptions": [
     {
       "id": "wellmanifest/new-project",
-      "version": "0.20.27",
-      "revision": "6d83b42f79058f95e265df47092dcfc2c5f3b56a",
+      "version": "0.20.29",
+      "revision": "a4178b9cf6fa12540ee7406d7f38391dd4fa1f30",
       "model": "local-conformance",
       "level": "S2",
       "artifacts": [
@@ -39,7 +39,7 @@
         },
         {
           "target": ".governance/AGENT_DECISIONS.md",
-          "sha256": "fb8fcbb00ba4100ec230aea34ef4634852dae30929eb9eaeafe548fbc7b1de87"
+          "sha256": "853c5282e44321cd5cd895f41627fc4c5bb98774cd6e726ee1ccf319582f8407"
         },
         {
           "target": ".governance/adoption-bindings.json",
@@ -75,7 +75,7 @@
         },
         {
           "target": ".governance/branch_lifecycle_check.py",
-          "sha256": "c37427a28fbb6826874584bb25fd992784c33b4600f1d77815f68a48b1acc543"
+          "sha256": "bf354a796e23334b0a2eccfac26fac99f37e4e562adc85793188eca2aaaaf931"
         },
         {
           "target": ".governance/change-evaluation.schema.json",
@@ -103,7 +103,7 @@
         },
         {
           "target": ".governance/diagnostics.json",
-          "sha256": "cfa1750cc5a9b02f7e47b111b10c931d2f182ff886d775d21791e1e0e7de6f61"
+          "sha256": "59d4f78ceca65d2d163655a0fb0a826671fcdcd5c7e9394cda9ee2b33551cb72"
         },
         {
           "target": ".governance/diagnostics.schema.json",
@@ -120,6 +120,10 @@
         {
           "target": ".governance/error/GOV-AGENT-HOST.md",
           "sha256": "a3679a63e6346946382dc510a8454b5c1c2851e694f7b3f4b82473764153a90f"
+        },
+        {
+          "target": ".governance/error/GOV-APPROVAL.md",
+          "sha256": "3b508f23491f2ad93e115481699fab84ef3def844f7580736c29c8afafb1ec47"
         },
         {
           "target": ".governance/error/GOV-CHANGE-LEASE.md",
@@ -159,11 +163,11 @@
         },
         {
           "target": ".governance/error/GOV-WORK-START.md",
-          "sha256": "b49714f59a1d07e4345be324af2c955c2bd8cf6d840c53ba0c74c0c19723f0f8"
+          "sha256": "93213ed96593bfa458b645e58c5e88fd805ce94655579e046e94d01dbde502f6"
         },
         {
           "target": ".governance/error/GOV-WORKSPACE-LIFECYCLE.md",
-          "sha256": "72436684572d784327a340d90ca96d9fd2927519e02334036fab402e9c1d8262"
+          "sha256": "392b9f484ee26eff04a77d6c24d283413aa25d7e23e0d295ab3d1542f3e1ef3d"
         },
         {
           "target": ".governance/error/GOV-WORKTREE-OVERLAP.md",
@@ -191,7 +195,7 @@
         },
         {
           "target": ".governance/manifest.base.json",
-          "sha256": "2e12e1411d9cfedd3f893ddc04f2051872b65951f9ee7003b534ef23a9a301b6"
+          "sha256": "5d05bead54141c9430fda42b7a858b6184606b4dde686209e53f6c94b7121788"
         },
         {
           "target": ".governance/manifest.schema.json",
@@ -199,7 +203,7 @@
         },
         {
           "target": ".governance/package-manifest.json",
-          "sha256": "d60e67b685ed90971024b76bca3b6f3d3084a8ea42275b1673ac592f7e004fc9"
+          "sha256": "3ec6ab9c02fb7c632b1a081e43c89c9243bb181d74f7ddd54eb772e74694bf23"
         },
         {
           "target": ".governance/precommit_standard_update.py",
@@ -271,7 +275,7 @@
         },
         {
           "target": ".governance/ticket_activity.py",
-          "sha256": "30b1c6eb1d6a3d0dbb11a30840d6e67aedf4cb0bf797f1adf7fdf46f17ccf5d5"
+          "sha256": "c2672349d879d967634de3100377a6f0c45a116733a2edc52309d7a0577e7d7b"
         },
         {
           "target": ".governance/ticket_allocation.py",
@@ -283,7 +287,7 @@
         },
         {
           "target": ".governance/ticket_storage.py",
-          "sha256": "1f8526fa7ce4c1b9207dd9a5ba5efb016d91475bae043ca406ed3df3ca5ab12d"
+          "sha256": "399328bbced61d9b205a5a5257decb2f312d40f29280b3536bd4f593d478a26e"
         },
         {
           "target": ".governance/work-classification.dsl.json",
@@ -299,7 +303,7 @@
         },
         {
           "target": ".governance/work-start-report.schema.json",
-          "sha256": "fa6666dc33d268908994fe8eb40eb6fb664ac0f38c086514a60894c926060e0f"
+          "sha256": "754052876760ab11204a7991aa750241e60e21bec92b9544f93a76d3c3d0f5d0"
         },
         {
           "target": ".governance/work_continuity.py",
@@ -307,7 +311,7 @@
         },
         {
           "target": ".governance/work_start_check.py",
-          "sha256": "99746b8124c9a263eb01ed9986f08df4c1696711fb9354f98ac8a87b1dd77d3d"
+          "sha256": "ebe2795f8a790be46a4d766f8a2315af7c7ea8f311ca1f7715488fd8dd00301d"
         },
         {
           "target": ".governance/workspace_lifecycle_check.py",
@@ -319,7 +323,7 @@
         },
         {
           "target": ".governance/worktree_overlap_check.py",
-          "sha256": "2e3fe11a2df33fa719195300608b4d0fc1eabfa3493fed2c3ca1545d3d73d09b"
+          "sha256": "a7d17aa36344cbf644437e5f5d3b9dc4d8a264863bae2e80198b147f21d4b84d"
         },
         {
           "target": ".governance/worktree_path_check.py",
@@ -363,7 +367,7 @@
         },
         {
           "target": "project/new-ticket.sh",
-          "sha256": "22163be92ac3ff827f13aacf97d52decfbb72448039d0357ef189304e2dd8282"
+          "sha256": "1eb5784f229c8c68417788e1753f013c0ca3d1164e510cd5ee294bf326044dd7"
         },
         {
           "target": "project/readme.sh",
@@ -389,18 +393,18 @@
       "evidence": [
         {
           "level": "S0",
-          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/6d83b42f79058f95e265df47092dcfc2c5f3b56a/POLICY.md",
+          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/a4178b9cf6fa12540ee7406d7f38391dd4fa1f30/POLICY.md",
           "sha256": "69519ad09560a634df038257d6d940a5977489ac5c4aa7f6d424d6861ffd984f"
         },
         {
           "level": "S1",
-          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/6d83b42f79058f95e265df47092dcfc2c5f3b56a/scripts/governance_check.py",
+          "uri": "https://raw.githubusercontent.com/wellmanifest/new-project/a4178b9cf6fa12540ee7406d7f38391dd4fa1f30/scripts/governance_check.py",
           "sha256": "48a1cf1231031e6f1216ae556a4ca5434c1e3e775c246990e16d78708fe2176d"
         },
         {
           "level": "S2",
           "uri": "./.governance/manifest.lock.json",
-          "sha256": "c03deb743e31fbc18422b61688c5a8c2995fea35b223bf3c03fee799e96202ea"
+          "sha256": "4214c710566e77ee54946ce786f9809705a6ee72e9014dea796375beaa3661a3"
         }
       ]
     }

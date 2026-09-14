@@ -289,6 +289,9 @@
         "observationDigest": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
+        },
+        "publication": {
+          "$ref": "#/$defs/publicationObservation"
         }
       }
     },
@@ -328,5 +331,49 @@
         }
       }
     }
-  ]
+  ],
+  "$defs": {
+    "publicationObservation": {
+      "$anchor": "publicationObservation",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "observedAt", "readOnly", "grantsAuthority", "remote", "scope", "status", "remoteRefsDigest", "targetRef", "notObservedStages", "worktrees"],
+      "properties": {
+        "schema": {"const": "new-project.publication-observation/v1"},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "readOnly": {"const": true},
+        "grantsAuthority": {"const": false},
+        "remote": {"const": "origin"},
+        "scope": {"const": "origin-heads"},
+        "status": {"enum": ["observed", "partial", "unavailable", "changed"]},
+        "remoteRefsDigest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "targetRef": {"type": "string", "pattern": "^refs/heads/.+"},
+        "notObservedStages": {"const": ["pull-request", "checks", "approval", "protected-merge", "release", "deployment"]},
+        "worktrees": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/publicationWorktree"}
+        }
+      }
+    },
+    "publicationWorktree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "branch", "headSha", "uncommittedPathCount", "remoteContainingRefs", "unpublishedCommitCount", "sameBranchContainsHead", "headReachableFromTarget", "nextAction"],
+      "properties": {
+        "path": {"type": "string"},
+        "branch": {"type": ["string", "null"]},
+        "headSha": {"type": "string", "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})$"},
+        "uncommittedPathCount": {"type": "integer", "minimum": 0},
+        "remoteContainingRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^refs/heads/.+"}
+        },
+        "unpublishedCommitCount": {"type": ["integer", "null"], "minimum": 0},
+        "sameBranchContainsHead": {"type": ["boolean", "null"]},
+        "headReachableFromTarget": {"type": ["boolean", "null"]},
+        "nextAction": {"enum": ["preserve-local-work", "observe-remote", "review-push-preconditions", "reconcile-branch-binding", "observe-integration-evidence", "observe-review-release-deployment"]}
+      }
+    }
+  }
 }

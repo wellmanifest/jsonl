@@ -1,0 +1,108 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-003",
+  "summary": "Adopt published governance 0.20.29 as the activity batching canary",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    ".governance/AGENT_DECISIONS.md",
+    ".governance/branch_lifecycle_check.py",
+    ".governance/diagnostics.json",
+    ".governance/error/GOV-APPROVAL.md",
+    ".governance/error/GOV-WORK-START.md",
+    ".governance/error/GOV-WORKSPACE-LIFECYCLE.md",
+    ".governance/manifest.base.json",
+    ".governance/manifest.json",
+    ".governance/manifest.lock.json",
+    ".governance/package-manifest.json",
+    ".governance/standard-adoption.json",
+    ".governance/ticket_activity.py",
+    ".governance/ticket_storage.py",
+    ".governance/work-start-report.schema.json",
+    ".governance/work_start_check.py",
+    ".governance/worktree_overlap_check.py",
+    "project/new-ticket.sh",
+    "project/ticket-003/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "a234b10b5d274ed7186f2f14e4363853717a1ddc",
+    "targetBranch": "main",
+    "outcome": "Adopt the final published 0.20.29 release through the managed generator, verify JSONL behavior and immutable pin, and independently merge this canary.",
+    "nonGoals": [
+      "No domain contract changes, managed hash edits, unpublished production pin, relaxed checks or unrelated worktree cleanup."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "standardAdoption": {
+      "sourceRepository": "wellmanifest/new-project",
+      "fromRevision": "6d83b42f79058f95e265df47092dcfc2c5f3b56a",
+      "toRevision": "a4178b9cf6fa12540ee7406d7f38391dd4fa1f30"
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Resolve the published source revision, apply its immutable managed package, and retain target-owned settings. Existing GitHub checks and independent Validator govern publication.",
+      "components": [
+        {
+          "name": "governance-adoption",
+          "paths": [
+            ".governance/AGENT_DECISIONS.md",
+            ".governance/branch_lifecycle_check.py",
+            ".governance/diagnostics.json",
+            ".governance/error/GOV-APPROVAL.md",
+            ".governance/error/GOV-WORK-START.md",
+            ".governance/error/GOV-WORKSPACE-LIFECYCLE.md",
+            ".governance/manifest.base.json",
+            ".governance/manifest.json",
+            ".governance/manifest.lock.json",
+            ".governance/package-manifest.json",
+            ".governance/standard-adoption.json",
+            ".governance/ticket_activity.py",
+            ".governance/ticket_storage.py",
+            ".governance/work-start-report.schema.json",
+            ".governance/work_start_check.py",
+            ".governance/worktree_overlap_check.py",
+            "project/new-ticket.sh"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert this exact upgrade through a new independently validated pull request."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "bash project/governance-check.sh",
+          "python3 standard/jsonl_check.py self-test",
+          "python3 standard/jsonl_check.py validate --profile candidate --file examples/candidates.jsonl"
+        ],
+        "evidence": "Exact-base governance and immutable package check; unchanged JSONL contract tests; required test check and independent exact-head Validator merge."
+      }
+    ]
+  }
+}
