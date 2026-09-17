@@ -594,6 +594,36 @@
       "target": ".governance/docs/LOCAL_CI_PUBLICATION.md",
       "strategy": "managed",
       "executable": false
+    },
+    {
+      "source": "scripts/snapshot_migration.py",
+      "target": ".governance/snapshot_migration.py",
+      "strategy": "managed",
+      "executable": true
+    },
+    {
+      "source": "governance/snapshot-migration.schema.json",
+      "target": ".governance/snapshot-migration.schema.json",
+      "strategy": "managed",
+      "executable": false
+    },
+    {
+      "source": "error/GOV-SNAPSHOT-MIGRATION.md",
+      "target": ".governance/error/GOV-SNAPSHOT-MIGRATION.md",
+      "strategy": "managed",
+      "executable": false
+    },
+    {
+      "source": "docs/information/snapshot-migration.md",
+      "target": ".governance/docs/SNAPSHOT_MIGRATION.md",
+      "strategy": "managed",
+      "executable": false
+    },
+    {
+      "source": "error/GOV-ARCHITECTURE-001.md",
+      "target": ".governance/error/GOV-ARCHITECTURE-001.md",
+      "strategy": "managed",
+      "executable": false
     }
   ]
 }

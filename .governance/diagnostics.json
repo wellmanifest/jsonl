@@ -68,8 +68,8 @@
     },
     "GOV-ARCHITECTURE-001": {
       "message": "Architecture ownership, UI/data impact or component mapping is unresolved.",
-      "remediation": "Complete the accepted architecture block in intent.json before implementation.",
-      "documentation": null
+      "remediation": "Classify actual data impact and resolve component or integration ownership under existing authority; follow the runbook before escalating.",
+      "documentation": "error/GOV-ARCHITECTURE-001.md"
     },
     "GOV-BASE-001": {
       "message": "The target branch or base SHA differs from the approved delivery contract.",
@@ -470,6 +470,36 @@
       "message": "Branch intent reconciliation is incomplete, stale or invalid.",
       "remediation": "Preserve history, reacquire the complete accepted criterion inventory and independently verified receipts at the exact source/target SHA; retain unknown work for review. Report conformance never authorizes deletion.",
       "documentation": null
+    },
+    "GOV-SNAPSHOT-MIGRATION-001": {
+      "message": "The snapshot migration contract is invalid.",
+      "remediation": "Preserve the source; reobserve the exact subject and protected grant before a bounded successor action.",
+      "documentation": "error/GOV-SNAPSHOT-MIGRATION.md"
+    },
+    "GOV-SNAPSHOT-MIGRATION-002": {
+      "message": "The immutable migration subject or complete Git history is unavailable.",
+      "remediation": "Preserve the source; reobserve the exact subject and protected grant before a bounded successor action.",
+      "documentation": "error/GOV-SNAPSHOT-MIGRATION.md"
+    },
+    "GOV-SNAPSHOT-MIGRATION-003": {
+      "message": "The migration authorization is missing or differs from the protected subject.",
+      "remediation": "Preserve the source; reobserve the exact subject and protected grant before a bounded successor action.",
+      "documentation": "error/GOV-SNAPSHOT-MIGRATION.md"
+    },
+    "GOV-SNAPSHOT-MIGRATION-004": {
+      "message": "The migration does not preserve source ancestry and atomic new intent.",
+      "remediation": "Preserve the source; reobserve the exact subject and protected grant before a bounded successor action.",
+      "documentation": "error/GOV-SNAPSHOT-MIGRATION.md"
+    },
+    "GOV-SNAPSHOT-MIGRATION-005": {
+      "message": "The migration inventory or imported tree differs from its authorized snapshot.",
+      "remediation": "Preserve the source; reobserve the exact subject and protected grant before a bounded successor action.",
+      "documentation": "error/GOV-SNAPSHOT-MIGRATION.md"
+    },
+    "GOV-SNAPSHOT-MIGRATION-006": {
+      "message": "The migration authorization was consumed or its one-use base or ticket changed.",
+      "remediation": "Preserve the source; reobserve the exact subject and protected grant before a bounded successor action.",
+      "documentation": "error/GOV-SNAPSHOT-MIGRATION.md"
     }
   }
 }
