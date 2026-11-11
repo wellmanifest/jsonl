@@ -49,7 +49,7 @@
     {
       "path": "standard/jsonl_check.py",
       "role": "parser-contract",
-      "digest": "sha256:bc4380ed034b2dcc5898c06726fa1caa5f1eb32f4b2c8d4f45edbbeea552a552"
+      "digest": "sha256:7509f3d89e4f48d7c686b1931b28c49dbec0fe78f6aec96a205c7e7bf7264739"
     },
     {
       "path": "examples/candidates.jsonl",

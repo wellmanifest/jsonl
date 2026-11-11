@@ -2,8 +2,8 @@
 
 - **ID**: ticket-005
 - **Owner**: agent:antigravity
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-11-11
 
 ## Session authorization
