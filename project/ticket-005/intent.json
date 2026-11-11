@@ -1,0 +1,89 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-005",
+  "summary": "Harden JSONL framing, authority diagnostics, and generation-request validation",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-005/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "profiles/dsl-manifest.json",
+    "pyproject.toml",
+    "standard/jsonl_check.py",
+    "standard/test_jsonl_check.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "133b5e9ea9ba5bcddc2038ba0d72984fc4582d53",
+    "targetBranch": "main",
+    "outcome": "Harden dependency-free JSONL byte-stream LF framing, model-authority diagnostics, strict RFC 3339 timestamp and identifier checks, generation-request profile validation, and standalone pytest coverage while keeping dsl-manifest artifact digests synchronized.",
+    "nonGoals": [
+      "Do not modify contracts/jsonl.contract.json wire schema keys or break valid existing candidate/record streams",
+      "Do not introduce third-party runtime dependencies",
+      "Do not edit managed .governance files"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 1,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Frame JSONL streams directly over LF-delimited UTF-8 byte slices in standard/jsonl_check.py, prioritize RUNTIME_OWNED rejection ahead of exact-key checks, share strict RFC 3339 validation across record validation and sealing, add generation-request profile validation, sync profiles/dsl-manifest.json digest, and wire pytest discovery.",
+      "components": [
+        {
+          "name": "jsonl-validator-and-tests",
+          "paths": [
+            "standard/jsonl_check.py",
+            "standard/test_jsonl_check.py",
+            "pyproject.toml"
+          ]
+        },
+        {
+          "name": "dsl-manifest-binding",
+          "paths": [
+            "profiles/dsl-manifest.json"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [
+        "Add generation-request profile choice to standard/jsonl_check.py validate CLI"
+      ],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the ticket branch commit to restore previous validator and manifest digest."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python3 standard/jsonl_check.py self-test",
+          "python3 standard/jsonl_check.py validate --profile candidate --file examples/candidates.jsonl",
+          "pytest -q",
+          "./project/governance-check.sh"
+        ],
+        "evidence": "Self-test, pytest suite, dsl-manifest check, and governance gate pass cleanly."
+      }
+    ]
+  }
+}
