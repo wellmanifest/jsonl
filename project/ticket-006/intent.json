@@ -1,0 +1,95 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-006",
+  "summary": "Harden JSONL stream I/O, symlink traversal, number/surrogate bounds, RFC3339 subseconds, and URI traversal",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-005/README.md",
+    "project/ticket-006/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "profiles/dsl-manifest.json",
+    "standard/jsonl_io.py",
+    "standard/jsonl_check.py",
+    "standard/test_jsonl_check.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "55a37473ae211985cb2e905ea9e1916fa64cd7c1",
+    "targetBranch": "main",
+    "outcome": "Harden standard/jsonl_check.py (< 500L) against symlink-parent traversal, non-regular files, unbounded streams, 5000-digit integers, overflow floats, lone UTF-16 surrogates, deep nesting, 7-9 digit RFC3339 fractional seconds, and URI traversal; sync profiles/dsl-manifest.json digest; expand standard/test_jsonl_check.py; and mark merged ticket-005 DONE.",
+    "nonGoals": [
+      "Do not modify contracts/jsonl.contract.json wire schema keys or break valid existing candidate/record streams",
+      "Do not introduce third-party runtime dependencies"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 20,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Enforce O_NOFOLLOW regular-file stream reading with symlink-ancestor checks, finite JSON number/surrogate/depth checks, 1-9 digit RFC3339 subsecond normalization, and URI traversal guards in standard/jsonl_check.py, updating profiles/dsl-manifest.json artifact digest.",
+      "components": [
+        {
+          "name": "jsonl-validator-and-tests",
+          "paths": [
+            "standard/jsonl_io.py",
+            "standard/jsonl_check.py",
+            "standard/test_jsonl_check.py"
+          ]
+        },
+        {
+          "name": "dsl-manifest-binding",
+          "paths": [
+            "profiles/dsl-manifest.json"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the ticket-006 branch commit or close the pull request before merge."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "ruff check --no-cache standard",
+          "PYTHONDONTWRITEBYTECODE=1 python3 standard/jsonl_check.py self-test",
+          "PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider"
+        ],
+        "evidence": "project/ticket-006/README.md"
+      },
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "PYTHONDONTWRITEBYTECODE=1 python3 standard/jsonl_check.py validate --profile candidate --file examples/candidates.jsonl",
+          "./project/governance-check.sh --base origin/main",
+          "wellman check"
+        ],
+        "evidence": "project/ticket-006/README.md"
+      }
+    ]
+  }
+}
