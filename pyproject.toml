@@ -1,6 +1,6 @@
 [tool.wellmanifest]
-standard = "0.20.32"
-revision = "b6ba9c21a65a6a5648ecf904b64c3b75295e136f"
+standard = "0.20.162"
+revision = "8e6b51dc91a2ac7e1e771908e0fac5e12da0b9a0"
 gate = "project/governance-check.sh"
 
 [tool.pytest.ini_options]
