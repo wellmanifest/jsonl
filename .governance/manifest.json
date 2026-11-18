@@ -61,7 +61,17 @@
           "project.bat",
           "project/**",
           "scripts/runtime.sh",
-          ".subactor/**"
+          ".subactor/**",
+          ".gitattributes",
+          ".githooks/commit-msg",
+          ".githooks/pre-commit",
+          ".githooks/pre-push",
+          ".github/workflows/new-project-branch-hygiene.yml",
+          ".github/workflows/new-project-governance.yml",
+          "pyproject.toml",
+          "scripts/install-agent-hosts.sh",
+          "wellmanifest_governance.py",
+          "worktree-guard.yaml"
         ]
       },
       "infrastructure": {
@@ -117,7 +127,14 @@
       "pyproject.toml",
       "go.mod",
       "Cargo.toml",
-      "pom.xml"
+      "pom.xml",
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      "yarn.lock",
+      "uv.lock",
+      "poetry.lock",
+      "go.sum",
+      "Cargo.lock"
     ],
     "maxActiveMinutes": 120,
     "maxAffectedComponents": 5,
@@ -191,6 +208,22 @@
     "componentRoots": [],
     "mode": "standalone"
   },
+  "repositoryPolicy": {
+    "delivery": {
+      "checkout": "linked-worktree",
+      "mode": "ticket-branch",
+      "targetBranches": [
+        "main"
+      ]
+    },
+    "enforcement": "enforce",
+    "profile": "ticket-worktree",
+    "tickets": {
+      "backend": "files",
+      "idPattern": "^ticket-[0-9]{3,}$",
+      "referenceRequired": true
+    }
+  },
   "requiredFiles": [
     "README.md",
     "VERSION",
@@ -205,7 +238,7 @@
   "stacks": [],
   "standard": {
     "id": "wellmanifest/new-project",
-    "version": "0.20.32"
+    "version": "0.20.162"
   },
   "ticket": {
     "activeStatuses": [
